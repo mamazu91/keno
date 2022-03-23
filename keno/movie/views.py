@@ -9,8 +9,7 @@ class MovieModelViewSet(ModelViewSet):
     Endpoint: /api/v1/movies/
     """
     queryset = Movie.objects.all()
-    serializer_class = MovieSerializer
-    http_method_names = ['get', 'post', 'destroy']
+    http_method_names = ['get', 'post', 'delete']
 
     def get_serializer_class(self):
         """
@@ -22,5 +21,3 @@ class MovieModelViewSet(ModelViewSet):
             return MovieTitleSerializer
         elif self.action == 'create':
             return MovieSerializer
-        elif self.action == 'destroy':
-            return MovieTitleSerializer
