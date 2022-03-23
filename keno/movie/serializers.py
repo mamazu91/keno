@@ -4,12 +4,18 @@ from .utils import get_unique_movie_titles
 
 
 class MovieTitleSerializer(ModelSerializer):
+    """
+    Serializer for movies titles.
+    """
     class Meta:
         model = Movie
         fields = ['title']
 
 
 class MovieSerializer(ModelSerializer):
+    """
+    Serializer for creating nested movies.
+    """
     movies = MovieTitleSerializer(many=True, allow_empty=False)
 
     class Meta:
@@ -34,5 +40,5 @@ class MovieSerializer(ModelSerializer):
         # https://www.django-rest-framework.org/api-guide/serializers/#customizing-multiple-create
         unique_titles_objects = [Movie(**movie) for movie in unique_titles]
 
-        movies = Movie.objects.bulk_create(unique_titles_objects, ignore_conflicts=True)
+        movies = Movie.objects.bulk_create(unique_titles_objects)
         return {'movies': movies}
