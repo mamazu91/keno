@@ -1,4 +1,4 @@
-def get_unique_movie_titles(movie_titles):
+def get_unique_movie_titles(movie_titles: list) -> list:
     unique_movie_titles = []
     for i in range(0, len(movie_titles)):
         if movie_titles[i] not in movie_titles[i + 1:]:
