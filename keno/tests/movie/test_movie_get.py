@@ -9,7 +9,7 @@ def test_movie_list(api_client, movie_factory):
     The test for getting the list of all movies.
     """
     movies = movie_factory(_quantity=3)
-    url = reverse('movie_add-list')
+    url = reverse('movies-list')
     response = api_client.get(url)
     assert response.status_code == 200
 
@@ -25,7 +25,7 @@ def test_movie_retrieve(api_client, movie_factory):
     The test for retrieving a movie.
     """
     movie = random.choice(movie_factory(_quantity=3))
-    url = reverse('movie_add-detail', args=(movie.id,))
+    url = reverse('movies-detail', args=(movie.id,))
     response = api_client.get(url)
     assert response.status_code == 200
     assert response.data.get('title') == movie.title

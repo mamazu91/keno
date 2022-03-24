@@ -9,7 +9,7 @@ then serializer them into a dict, but that didn't work well, as I was getting an
 
 
 @pytest.mark.django_db
-def test_movie_add(api_client):
+def test_movie_create(api_client):
     """
     The only test with proper inputs.
     Not sure if the naming is good, but couldn't come up with something better.
@@ -24,7 +24,7 @@ def test_movie_add(api_client):
             }
         ]
     }
-    url = reverse('movie_add-list')
+    url = reverse('movies-list')
     response = api_client.post(url, data=payload)
     assert response.status_code == 201
     assert response.data == payload
@@ -39,11 +39,11 @@ def test_movie_add(api_client):
     )
 )
 @pytest.mark.django_db
-def test_movie_add_empty_payload(api_client, payload, expected_status):
+def test_movie_create_with_empty_payload(api_client, payload, expected_status):
     """
     The test for all different kinds of empty payload.
     """
-    url = reverse('movie_add-list')
+    url = reverse('movies-list')
     response = api_client.post(url, data=payload)
     assert response.status_code == expected_status
 
@@ -57,18 +57,18 @@ def test_movie_add_empty_payload(api_client, payload, expected_status):
     )
 )
 @pytest.mark.django_db
-def test_movie_add_bad_title(api_client, payload, expected_status):
+def test_movie_create_with_bad_title(api_client, payload, expected_status):
     """
     The test for all different kinds of bad title.
     Not sure how obvious is 256 * 'a', but the idea was to show that title has max_length=255.
     """
-    url = reverse('movie_add-list')
+    url = reverse('movies-list')
     response = api_client.post(url, data=payload)
     assert response.status_code == expected_status
 
 
 @pytest.mark.django_db
-def test_movie_add_existing_title(api_client, movie_factory):
+def test_movie_create_with_existing_title(api_client, movie_factory):
     """
     The test to check that if a movie exists,
     another one with the same title is not going to be created.
@@ -81,13 +81,13 @@ def test_movie_add_existing_title(api_client, movie_factory):
             },
         ]
     }
-    url = reverse('movie_add-list')
+    url = reverse('movies-list')
     response = api_client.post(url, data=payload)
     assert response.status_code == 400
 
 
 @pytest.mark.django_db
-def test_movie_add_same_title_twice(api_client):
+def test_movie_create_with_same_title_twice(api_client):
     """
     The test to check that the same movie cannot be created twice.
     Also checks that the response is not going to contain any duplicates.
@@ -102,7 +102,7 @@ def test_movie_add_same_title_twice(api_client):
             }
         ]
     }
-    url = reverse('movie_add-list')
+    url = reverse('movies-list')
     response = api_client.post(url, data=payload)
     assert response.status_code == 201
     assert len(response.data['movies']) == 1

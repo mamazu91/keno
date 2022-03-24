@@ -19,9 +19,10 @@ from rest_framework.routers import DefaultRouter
 import movie.views
 
 movie_router = DefaultRouter()
-movie_router.register('movies', movie.views.MovieModelViewSet, basename='movie_add')
+movie_router.register('movies', movie.views.MovieModelViewSet, basename='movies')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include(movie_router.urls))
+    path('api/v1/', include(movie_router.urls)),
+    path('', movie.views.HomeApiView.as_view())
 ]

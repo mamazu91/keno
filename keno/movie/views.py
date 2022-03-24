@@ -1,8 +1,33 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.views import APIView
 from .models import Movie
 from .serializers import MovieSerializer, MovieTitleSerializer
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
+from rest_framework import status
+
+
+class HomeApiView(APIView):
+    """
+    APIView that returns HTML containing table with list of all movies.
+    Endpoint: /
+    """
+    renderer_classes = [TemplateHTMLRenderer]
+
+    def get_queryset(self):
+        """
+        Created the function just in case I need to add some more logic to making of the resulting queryset.
+        By default, APIView doesn't implement get_queryset function, so it's not an override per se.
+        """
+        return Movie.objects.all()
+
+    def get(self, request):
+        """
+        Not sure why, but even though PyCharm does not automatically add request parameter
+        when creating the function, it's not going to work without it. Weird.
+        """
+        return Response({'movies': self.get_queryset()}, template_name='movie/index.html', status=status.HTTP_200_OK)
+
 
 class MovieModelViewSet(ModelViewSet):
     """
@@ -11,7 +36,6 @@ class MovieModelViewSet(ModelViewSet):
     """
     queryset = Movie.objects.all()
     http_method_names = ['get', 'post', 'delete']
-    renderer_classes = [TemplateHTMLRenderer]
 
     def get_serializer_class(self):
         """
@@ -23,14 +47,3 @@ class MovieModelViewSet(ModelViewSet):
             return MovieTitleSerializer
         elif self.action == 'create':
             return MovieSerializer
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response({'movies': Movie.objects.all()}, template_name='movie/index.html')
