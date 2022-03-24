@@ -35,6 +35,9 @@ class MovieModelViewSet(ModelViewSet):
     Endpoint: /api/v1/movies/
     """
     queryset = Movie.objects.all()
+
+    # For whatever reason delete works okay even when it's in http_method_names, but not in get_serializer_class.
+    # However, the same does not apply to create or other methods.
     http_method_names = ['get', 'post', 'delete']
 
     def get_serializer_class(self):
